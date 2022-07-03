@@ -1,7 +1,9 @@
 
 enum Trabalho {
     Atriz,
-    Padeiro
+    Padeiro,
+    Programador,
+    GameDeveloper
 }
 
 type Humano = {
@@ -25,11 +27,11 @@ let pessoa2: Humano = {
 let pessoa3: Humano = {
     nome: 'laura',
     idade: 32,
-    profissao: Trabalho.Atriz
+    profissao: Trabalho.Programador
 };
 
 let pessoa4: Humano = {
     nome: "carlos",
     idade: 19,
-    profissao: Trabalho.Padeiro
+    profissao: Trabalho.GameDeveloper
 }
