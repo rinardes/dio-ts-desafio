@@ -27,6 +27,14 @@ loginButton.addEventListener('click', async () => {
   await criarSessao();
 })
 
+class ResponseResults{
+  results: Movie[]
+}
+
+class Movie{
+  original_title: string
+}
+
 searchButton.addEventListener('click', async () => {
   let lista = document.getElementById("lista");
   if (lista) {
@@ -36,7 +44,8 @@ searchButton.addEventListener('click', async () => {
   let listaDeFilmes = await procurarFilme(query);
   let ul = document.createElement('ul');
   ul.id = "lista"
-  for (const item of listaDeFilmes.results) {
+  let listaDeFilmesCast = listaDeFilmes as ResponseResults;
+  for (const item of listaDeFilmesCast.results) {
     let li = document.createElement('li');
     li.appendChild(document.createTextNode(item.original_title))
     ul.appendChild(li)
@@ -67,8 +76,6 @@ function validateLoginButton() {
     loginButton.disabled = true;
   }
 }
-
-var sabao:null;
 
 class HttpClient {
   static async get({url, method, body=null}: {url: string; method: string, body: any}) {
@@ -122,14 +129,17 @@ async function adicionarFilme(filmeId: string) {
   console.log(result);
 }
 
+
+
 async function criarRequestToken () {
   let result = await HttpClient.get({
     url: `https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`,
     method: "GET",
     body: {}
   })
-  if(typeof result === "object"){
-    requestToken = result.request_token
+  if(result instanceof Object){
+    requestToken = JSON.stringify(result);
+    requestToken = JSON.parse(requestToken).request_token;
   }
 }
 
@@ -138,6 +148,7 @@ async function logar() {
     url: `https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=${apiKey}`,
     method: "POST",
     body: {
+      hasBody: true,
       username: `${username}`,
       password: `${password}`,
       request_token: `${requestToken}`
@@ -152,7 +163,8 @@ async function criarSessao() {
     body: {}
   })
   if(typeof result === "object"){
-    sessionId = result.session_id;
+    sessionId = JSON.stringify(result);
+    sessionId = JSON.parse(sessionId).session_id;
 
   }
 }
